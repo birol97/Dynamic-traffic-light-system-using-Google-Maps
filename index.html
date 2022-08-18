@@ -1,0 +1,66 @@
+<html>
+<body>
+    
+    <form  id = emergency onsubmit="test()">
+        
+            <input type="checkbox" id="vehicle1" name="lane1" value="1">
+            <label for="vehicle1"> emergency situation in lane1</label><br>
+            <input type="checkbox" id="vehicle2" name="lane2" value="2">
+            <label for="vehicle2"> emergency situation in lane1</label><br>
+            <input type="checkbox" id="vehicle3" name="lane3" value="3">
+            <label for="vehicle3"> emergency situation in lane1</label>
+          <input type="submit" value="Submit">
+      </form>
+
+      <script>
+
+const mqtt = require('mqtt')
+xx = document.getElementById("myForm").submit();
+priorit_values;
+if(xx == 1){
+
+    priorit_values  = JSON.stringify([0,1,2]);
+}
+if(xx == 2){
+    priorit_values  = JSON.stringify([1,0,2]);
+[1,0,2];
+} 
+if(xx == 3){
+    priorit_values  = JSON.stringify([2,1,0]);
+
+}  
+const host = '192.168.10.105'
+const port = '1883'
+const clientId = `mqtt_${Math.random().toString(16).slice(3)}`
+
+const connectUrl = `mqtt://${host}:${port}`
+const client = mqtt.connect(connectUrl, {
+  clientId,
+  clean: true,
+  connectTimeout: 4000,
+  username: 'birol',
+  password: '123456',
+  reconnectPeriod: 1000,
+})
+
+const topic = '/traffic_status'
+client.on('connect', () => {
+  console.log('Connected')
+  client.subscribe([topic], () => {
+    console.log(`Subscribe to topic '${topic}'`)
+  })
+  client.publish(topic, priorit_values, { qos: 0, retain: false }, (error) => {
+    if (error) {
+      console.error(error)
+    }
+  })
+})
+client.on('message', (topic, priorit_values) => {
+  console.log('Received Message:', topic, payload.toString())
+})
+
+
+      </script>
+</body>
+</html>
+
