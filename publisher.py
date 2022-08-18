@@ -2,17 +2,19 @@
 
 import random
 import time
-
+import traffic_priority
+import os
+import sys
 from paho.mqtt import client as mqtt_client
 
 
-broker = '192.168.10.107'
+broker = '192.168.10.105'
 port = 1883
-topic = "ee513/test"
+topic = "traffic_status"
 # generate client ID with pub prefix randomly
 client_id = f'python-mqtt-{random.randint(0, 1000)}'
 username = 'birol'
-password = '12345'
+password = '123456'
 
 def connect_mqtt():
     def on_connect(client, userdata, flags, rc):
@@ -30,17 +32,22 @@ def connect_mqtt():
 
 def publish(client):
     msg_count = 0
+    xx = traffic_priority.getpage1();
     while True:
         time.sleep(1)
-        msg = f"messages: {msg_count}"
-        result = client.publish(topic, msg)
-        # result: [0, 1]
-        status = result[0]
-        if status == 0:
-            print(f"Send `{msg}` to topic `{topic}`")
-        else:
-            print(f"Failed to send message to topic {topic}")
-        msg_count += 1
+        if(1 == 1):
+            #traffic_priority.webscraping();
+            print(xx)
+            msg = traffic_priority.webscraping();
+            
+            result = client.publish(topic, xx)
+            # result: [0, 1]
+            status = result[0]
+            if status == 0:
+                print(f"Send `{msg}` to topic `{topic}`")
+            else:
+                 print(f"Failed to send message to topic {topic}")
+            msg_count += 1
 
 
 def run():
